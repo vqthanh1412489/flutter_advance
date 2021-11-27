@@ -10,7 +10,7 @@ enum AppType {
 }
 void main() {
   // Config appType
-  const AppType appSelected = AppType.app3;
+  const AppType appSelected = AppType.app1;
 
   final Widget currentWidget;
 
