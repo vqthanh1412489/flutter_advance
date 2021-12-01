@@ -26,6 +26,12 @@ class Home1 extends StatelessWidget {
             },
             title: 'dynamic_size_button',
           ),
+          LessionItem(
+            onTab: () {
+              Get.toNamed(RouteName.tips_performance);
+            },
+            title: 'tips_performance',
+          ),
         ],
       ),
     );
