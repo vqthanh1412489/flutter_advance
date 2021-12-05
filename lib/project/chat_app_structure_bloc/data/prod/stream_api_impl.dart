@@ -40,7 +40,7 @@ class StreamApiImpl extends StreamApiRepository {
       {String? image}) async {
     final channel = _client.channel('messaging', id: idChannel, extraData: {
       'name': name,
-      'imaeg': image,
+      'image': image,
       'members': [_client.state.currentUser?.id, ...members]
     });
     await channel.watch();

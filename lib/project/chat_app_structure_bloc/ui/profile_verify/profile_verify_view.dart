@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/routes/navigator_utils.dart';
+import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/common/avatar_widget.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/home/home_view.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/profile_verify/profile_verify_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,8 @@ class ProfileVerifyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = Theme.of(context).backgroundColor;
+
     return BlocProvider(
       create: (context) => ProfileVerifyCubit(context.read(), context.read()),
       child: BlocConsumer<ProfileVerifyCubit, ProfileVerifyState>(
@@ -18,42 +21,86 @@ class ProfileVerifyView extends StatelessWidget {
         }
       }, builder: (context, snapshot) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('ProfileVerifyView'),
-          ),
+          backgroundColor: backgroundColor,
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Verify your identify'),
-              snapshot.file == null
-                  ? const Placeholder(
-                      fallbackHeight: 100,
-                      fallbackWidth: 100,
-                    )
-                  : Image.file(
-                      snapshot.file!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-              IconButton(
-                  onPressed: () {
-                    context.read<ProfileVerifyCubit>().pickImage();
-                  },
-                  icon: const Icon(Icons.photo)),
-              const Text('Your name'),
-              const TextField(
-                decoration: InputDecoration(hintText: 'Or just how to ...'),
+              const Text(
+                'Verify your identify',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    context.read<ProfileVerifyCubit>().startChatting();
-                  },
-                  child: const Text('Start chating now')),
+              const SizedBox(height: 30),
+              AvatarWidget(
+                onTap: context.read<ProfileVerifyCubit>().pickImage,
+                child: snapshot.file == null
+                    ? Icon(
+                        Icons.person_outline,
+                        size: 100,
+                        color: Colors.grey[400],
+                      )
+                    : Image.file(
+                        snapshot.file!,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Enter your name and access to our platform...',
+                    hintStyle:
+                        TextStyle(fontSize: 16.0, color: Colors.grey[400]),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    fillColor: Theme.of(context)
+                        .bottomNavigationBarTheme
+                        .backgroundColor,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              const ButtonChatingNowWidget(),
             ],
           ),
         );
       }),
+    );
+  }
+}
+
+class ButtonChatingNowWidget extends StatelessWidget {
+  const ButtonChatingNowWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Hero(
+      tag: 'home_hero',
+      child: Material(
+        elevation: 3,
+        shadowColor: Colors.black45,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        color: Theme.of(context).primaryColor,
+        child: InkWell(
+          onTap: () => context.read<ProfileVerifyCubit>().startChatting(),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
+            child: Text('Start chating now',
+                style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold)),
+          ),
+        ),
+      ),
     );
   }
 }

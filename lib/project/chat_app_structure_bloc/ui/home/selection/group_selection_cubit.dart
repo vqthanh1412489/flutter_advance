@@ -10,8 +10,9 @@ import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 class GroupSelectionState {
   final File? file;
   final Channel? channel;
+  final bool isLoading;
 
-  GroupSelectionState({this.file, this.channel});
+  GroupSelectionState({this.file, this.channel, this.isLoading = false});
 }
 
 class GroupSelectionCubit extends Cubit<GroupSelectionState> {
@@ -27,11 +28,13 @@ class GroupSelectionCubit extends Cubit<GroupSelectionState> {
 
   Future<void> createGroup() async {
     if (state.file != null) {
+      emit(GroupSelectionState(file: state.file, isLoading: true));
       final channel = await _createGroupUseCase.createGroup(CreateGroupInput(
           state.file!,
           groupNameController.text,
           members.map((e) => e.chatUser.id).toList()));
-      emit(GroupSelectionState(file: state.file, channel: channel));
+      emit(GroupSelectionState(
+          file: state.file, channel: channel, isLoading: false));
     }
   }
 

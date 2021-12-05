@@ -25,6 +25,10 @@ class FriendSelectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
+    const heightHorizontalList = 110.0;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -39,77 +43,150 @@ class FriendSelectionView extends StatelessWidget {
 
             return Scaffold(
               floatingActionButton: isGroup && selectedUsers.isNotEmpty
-                  ? FloatingActionButton(onPressed: () {
-                      pushToPage(context,
-                          GroupSelectionView(selectedUsers: selectedUsers));
-                    })
-                  : null,
-              body: Column(
-                children: [
-                  isGroup
-                      ? Row(
-                          children: [
-                            BackButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                            const Text('New Group'),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            BackButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                            const Text('People'),
-                          ],
-                        ),
-                  if (!isGroup)
-                    ElevatedButton(
-                        onPressed: () {
-                          context.read<FriendIsGroupCubit>().changeToGroup();
-                        },
-                        child: const Text('Crate Group'))
-                  else if (isGroup && selectedUsers.isEmpty)
-                    Column(
-                      children: [
-                        CircleAvatar(),
-                        const Text('Add a friend'),
-                      ],
+                  ? FloatingActionButton(
+                      onPressed: () {
+                        pushToPage(context,
+                            GroupSelectionView(selectedUsers: selectedUsers));
+                      },
+                      child: const Icon(Icons.arrow_right_alt_rounded),
                     )
-                  else
-                    SizedBox(
-                        height: 100,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: selectedUsers.length,
-                            itemBuilder: (context, index) {
-                              final chatUserState = selectedUsers[index];
+                  : null,
+              body: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    isGroup
+                        ? Row(
+                            children: [
+                              BackButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                              Text(
+                                'New Group',
+                                style: Theme.of(context)
+                                    .appBarTheme
+                                    .titleTextStyle,
+                              ),
+                            ],
+                          )
+                        : Row(
+                            children: [
+                              BackButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                              Text(
+                                'People',
+                                style: Theme.of(context)
+                                    .appBarTheme
+                                    .titleTextStyle,
+                              ),
+                            ],
+                          ),
+                    if (!isGroup)
+                      SizedBox(
+                        height: heightHorizontalList,
+                        child: ListTile(
+                          onTap:
+                              context.read<FriendIsGroupCubit>().changeToGroup,
+                          leading: CircleAvatar(
+                              backgroundColor: primaryColor,
+                              child: const Icon(Icons.group_outlined)),
+                          title: const Text('Create group',
+                              style: TextStyle(
+                                  fontSize: 16.0, fontWeight: FontWeight.w700)),
+                          subtitle: Text(
+                            'Tale with 2 or more contacts',
+                            style: TextStyle(
+                                fontSize: 14.0, color: Colors.grey[400]),
+                          ),
+                        ),
+                      )
+                    else if (isGroup && selectedUsers.isEmpty)
+                      SizedBox(
+                        height: heightHorizontalList,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 20.0, top: 10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: primaryColor,
+                                child: const Icon(Icons.add_outlined),
+                              ),
+                              const SizedBox(
+                                height: 6,
+                              ),
+                              Text(
+                                'Add a friend',
+                                style: TextStyle(
+                                    fontSize: 14.0, color: Colors.grey[400]),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      Container(
+                          height: 110,
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: selectedUsers.length,
+                              itemBuilder: (context, index) {
+                                final chatUserState = selectedUsers[index];
 
-                              return Stack(
-                                children: [
-                                  Column(
+                                return Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
                                     children: [
-                                      CircleAvatar(
-                                        backgroundImage: chatUserState
-                                                    .chatUser.image !=
-                                                ''
-                                            ? NetworkImage(
-                                                chatUserState.chatUser.image)
-                                            : const NetworkImage(
-                                                'https://cdn-icons-png.flaticon.com/512/219/219983.png'),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 26,
+                                            backgroundImage: chatUserState
+                                                        .chatUser.image !=
+                                                    ''
+                                                ? NetworkImage(chatUserState
+                                                    .chatUser.image)
+                                                : const NetworkImage(
+                                                    'https://cdn-icons-png.flaticon.com/512/219/219983.png'),
+                                          ),
+                                          // const SizedBox(
+                                          //   height: 6,
+                                          // ),
+                                          // Text(chatUserState.chatUser.name),
+                                        ],
                                       ),
-                                      Text(chatUserState.chatUser.name),
+                                      Positioned(
+                                        bottom: 32,
+                                        right: -5,
+                                        child: InkWell(
+                                          onTap: () => context
+                                              .read<FriendListUserCubit>()
+                                              .selectUser(chatUserState),
+                                          child: CircleAvatar(
+                                            radius: 10,
+                                            backgroundColor: primaryColor,
+                                            child: const Icon(
+                                              Icons.close_rounded,
+                                              color: Colors.white,
+                                              size: 10,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                  IconButton(
-                                      onPressed: () => context
-                                          .read<FriendListUserCubit>()
-                                          .selectUser(chatUserState),
-                                      icon: const Icon(Icons.delete)),
-                                ],
-                              );
-                            })),
-                  Expanded(
+                                );
+                              })),
+                    Expanded(
+                        child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
                       child: ListView.builder(
                           itemCount: listUsers.length,
                           itemBuilder: (context, index) {
@@ -135,8 +212,10 @@ class FriendSelectionView extends StatelessWidget {
                                           .selectUser(chatUserState))
                                   : null,
                             );
-                          })),
-                ],
+                          }),
+                    )),
+                  ],
+                ),
               ),
             );
           },

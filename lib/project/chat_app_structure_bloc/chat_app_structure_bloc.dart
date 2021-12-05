@@ -1,10 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_advance_widget/dependencies.dart';
-import 'package:flutter_advance_widget/project/chat_app/login.dart';
+import 'package:flutter_advance_widget/project/chat_app_structure_bloc/dependencies.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/app_theme_cubit.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/splash/splash_view.dart';
+import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/themes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
@@ -40,8 +39,9 @@ class _ChatAppStructureBLOCState extends State<ChatAppStructureBLOC> {
           create: (context) => AppThemeCubit(context.read())..init(),
           child: BlocBuilder<AppThemeCubit, bool>(builder: (context, snapshot) {
             return GetMaterialApp(
+              debugShowCheckedModeBanner: false,
               title: 'Flutter Demo',
-              theme: snapshot ? ThemeData.dark() : ThemeData.light(),
+              theme: snapshot ? Themes.themeDark : Themes.themeLight,
               home: const SplashView(),
               builder: (context, child) {
                 return StreamChat(client: _streamChatClient, child: child);

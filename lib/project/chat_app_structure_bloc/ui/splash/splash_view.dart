@@ -3,6 +3,7 @@ import 'package:flutter_advance_widget/project/chat_app_structure_bloc/routes/na
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/home/home_view.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/profile_verify/profile_verify_view.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/sign_in/sign_in_view.dart';
+import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/splash/init_background_view.dart';
 import 'package:flutter_advance_widget/project/chat_app_structure_bloc/ui/splash/splash_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +12,8 @@ class SplashView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = Theme.of(context).backgroundColor;
+
     return BlocProvider<SplashCubit>(
       create: (context) => SplashCubit(context.read())..init(),
       child: BlocListener<SplashCubit, SplashState>(
@@ -23,8 +26,9 @@ class SplashView extends StatelessWidget {
             pushAndReplaceToPage(context, const ProfileVerifyView());
           }
         },
-        child: const Scaffold(
-          backgroundColor: Colors.red,
+        child: Scaffold(
+          backgroundColor: backgroundColor,
+          body: const InitBackgroundView(),
         ),
       ),
     );
